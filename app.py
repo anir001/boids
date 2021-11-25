@@ -7,7 +7,7 @@ from boid import Boid
 
 class App():
     def __init__(self,
-                 screen_width=800,
+                 screen_width=1700,
                  screen_height=600):
         self.screen_width = screen_width
         self.screen_height = screen_height
