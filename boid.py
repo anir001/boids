@@ -15,21 +15,21 @@ class Boid():
 
         self.velocity = Vector2(random.uniform(-1, 1), random.uniform(-1, 1))
         self.velocity = self.__set_mag__(self.velocity, random.uniform(2, 4))
-        
+
         self.max_speed = 5
 
-        self.perception = 50
-        self.align_factor = 0.3
-        self.cohesion_factor = 0.05
-        self.separation_factor = 0.1
-        self.min_distance = 20
+        self.perception = 100
+        self.align_factor = 0.02
+        self.cohesion_factor = 0.002
+        self.separation_factor = 0.009
+        self.min_distance = 25
 
     def update(self, flock: list):
         self.flock(flock)
 
         # limit the speed
-
         self.velocity = self.__limit__(self.velocity, self.max_speed)
+
         self.move()
 
     def flock(self, flock):
@@ -38,7 +38,7 @@ class Boid():
         self.separation(flock)
 
     def __set_mag__(self, vector: Vector2, mag: float):
-        vector = vector.normalize() * mag
+        vector.scale_to_length(mag)
         return vector
 
     def __limit__(self, vector: Vector2, limit: float):

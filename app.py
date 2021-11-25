@@ -17,7 +17,7 @@ class App():
 
         self.flock = []
 
-        self.__build__(flock_size=100)
+        self.__build__(flock_size=50)
 
     def handle_events(self):
         """
