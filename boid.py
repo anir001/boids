@@ -16,13 +16,12 @@ class Boid:
                                                self.screen_width - self.size),
                                 random.randint(self.size,
                                                self.screen_height - self.size))
-        # self.position = Vector2(300, 300)
 
         self.velocity = Vector2(random.uniform(-1, 1), random.uniform(-1, 1))
-        self.velocity = self.__set_mag__(self.velocity, random.uniform(2, 4))
+        self.velocity = self.__set_speed__(self.velocity, random.uniform(2, 4))
 
         # for avoid edges
-        self.margin = 50
+        self.margin = 25
         self.edges = [self.margin,
                       self.margin,
                       self.screen_width - self.margin,
@@ -44,8 +43,8 @@ class Boid:
         self.avoid_edge()
 
         # limit the speed
-        self.velocity = self.__limit__(self.velocity, self.max_speed)
-        # self.velocity = self.__set_mag__(self.velocity, self.max_speed)
+        # self.velocity = self.__limit__(self.velocity, self.max_speed)
+        self.velocity = self.__set_speed__(self.velocity, self.max_speed)
 
         self.move()
 
@@ -55,14 +54,14 @@ class Boid:
         self.separation(flock)
 
     @staticmethod
-    def __set_mag__(vector: Vector2, mag: float):
+    def __set_speed__(vector: Vector2, mag: float):
         vector.scale_to_length(mag)
         return vector
 
     @staticmethod
     def __limit__(vector: Vector2, limit: float):
         if vector.magnitude() >= limit:
-            vector = Boid.__set_mag__(vector, limit)
+            vector = Boid.__set_speed__(vector, limit)
         return vector
 
     def alignment(self, flock: list):
@@ -103,9 +102,9 @@ class Boid:
         for other in flock:
             if other is not self and \
                self.position.distance_to(other.position) < self.min_distance:
-                sep = sep + (self.position - other.position)
+                sep = (self.position - other.position) * self.separation_factor
 
-        self.velocity = self.velocity + (sep * self.separation_factor)
+        self.velocity = self.velocity + sep
 
     def move(self):
         self.position += self.velocity
@@ -127,16 +126,13 @@ class Boid:
         right = self.position.x - self.edges[2]
         down = self.position.y - self.edges[3]
 
-        scale = max(left, up, right, down)
+        edge = max(left, up, right, down)
 
-        if scale > 0:
+        if edge > 0:
             center = (self.screen_width / 2, self.screen_height / 2)
             steering = Vector2(center)
             steering = (steering - self.position) * 0.001
-        else:
-            steering = Vector2()
-
-        self.velocity += steering
+            self.velocity += steering
 
     def draw(self, screen: pygame.display):
         pygame.draw.circle(screen, Color('grey'), self.position, self.size)
