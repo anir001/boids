@@ -24,7 +24,6 @@ class App:
         """
         Handle any keypressed
         q - quit
-
         :return:
         """
         for event in pygame.event.get():
@@ -39,10 +38,10 @@ class App:
     def __build__(self, flock_size: int):
         """
         Initiate flock
-
-        :param: flock_size : int
-            Boids amount
+        :param flock_size: Boids amount
+        :return:
         """
+
         for i in range(flock_size):
             self.flock.append(Boid())
 

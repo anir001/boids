@@ -36,6 +36,10 @@ class Boid:
         self.min_distance = 25
 
     def update(self, flock: list):
+        """
+        :param flock:
+        :return:
+        """
         self.flock(flock)
         self.avoid_edge()
 
@@ -45,7 +49,7 @@ class Boid:
 
         self.move()
 
-    def flock(self, flock):
+    def flock(self, flock: list):
         self.alignment(flock)
         self.cohesion(flock)
         self.separation(flock)
