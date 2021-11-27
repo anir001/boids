@@ -5,7 +5,7 @@ from pygame.math import Vector2
 import random
 
 
-class Boid():
+class Boid:
     def __init__(self):
         info = pygame.display.Info()
         self.screen_width = info.current_w
@@ -23,13 +23,16 @@ class Boid():
 
         # for avoid edges
         self.margin = 50
-        self.set_boundary()
+        self.edges = [self.margin,
+                      self.margin,
+                      self.screen_width - self.margin,
+                      self.screen_height - self.margin]
 
         self.max_speed = 5
         self.perception = 100
-        self.align_factor = 0.02
+        self.align_factor = 0.1
         self.cohesion_factor = 0.002
-        self.separation_factor = 0.009
+        self.separation_factor = 0.01
         self.min_distance = 25
 
     def update(self, flock: list):
@@ -43,20 +46,22 @@ class Boid():
         self.move()
 
     def flock(self, flock):
-        self.aligment(flock)
+        self.alignment(flock)
         self.cohesion(flock)
         self.separation(flock)
 
-    def __set_mag__(self, vector: Vector2, mag: float):
+    @staticmethod
+    def __set_mag__(vector: Vector2, mag: float):
         vector.scale_to_length(mag)
         return vector
 
-    def __limit__(self, vector: Vector2, limit: float):
+    @staticmethod
+    def __limit__(vector: Vector2, limit: float):
         if vector.magnitude() >= limit:
-            vector = self.__set_mag__(vector, limit)
+            vector = Boid.__set_mag__(vector, limit)
         return vector
 
-    def aligment(self, flock: list):
+    def alignment(self, flock: list):
         steering = Vector2()
 
         total = 0
@@ -102,14 +107,14 @@ class Boid():
         self.position += self.velocity
 
         # wrap screen
-        if self.position.x < 0:
-            self.position.x = self.screen_width
-        elif self.position.x > self.screen_width:
-            self.position.x = 0
-        if self.position.y < 0:
-            self.position.y = self.screen_height
-        elif self.position.y > self.screen_height:
-            self.position.y = 0
+        # if self.position.x < 0:
+        #     self.position.x = self.screen_width
+        # elif self.position.x > self.screen_width:
+        #     self.position.x = 0
+        # if self.position.y < 0:
+        #     self.position.y = self.screen_height
+        # elif self.position.y > self.screen_height:
+        #     self.position.y = 0
 
     def avoid_edge(self):
 
@@ -123,18 +128,11 @@ class Boid():
         if scale > 0:
             center = (self.screen_width / 2, self.screen_height / 2)
             steering = Vector2(center)
-            steering = (steering - self.position) * 0.002
+            steering = (steering - self.position) * 0.001
         else:
             steering = Vector2()
 
         self.velocity += steering
 
-    def set_boundary(self):
-        self.edges = [self.margin,
-                      self.margin,
-                      self.screen_width - self.margin,
-                      self.screen_height - self.margin]
-
     def draw(self, screen: pygame.display):
-        pygame.draw.circle(screen, Color('grey'), self.position, self.size)
         pygame.draw.circle(screen, Color('grey'), self.position, self.size)

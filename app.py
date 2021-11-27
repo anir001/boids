@@ -5,7 +5,7 @@ from sys import exit
 from boid import Boid
 
 
-class App():
+class App:
     def __init__(self,
                  screen_width=1700,
                  screen_height=600):
@@ -17,9 +17,10 @@ class App():
 
         self.flock = []
 
-        self.__build__(flock_size=50)
+        self.__build__(flock_size=10)
 
-    def handle_events(self):
+    @staticmethod
+    def handle_events():
         """
         Handle any keypressed
         q - quit
